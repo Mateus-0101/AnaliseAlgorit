@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void busca_binaria(double vetor_alt[], int qtd_placas, double area, double menor, double maior, double *metade)
+double busca_binaria(double vetor_alt[], int qtd_placas, double area, double menor, double maior, double metade)
 {
     double corte = 0;
 
-    while((maior - menor) >= 0.00000000001)
+    while(maior >= menor)
     {
         double soma = 0;
-        (*metade) = (menor + maior)/2;
+        metade = (menor + maior)/2;
 
         for(int i = 0; i < qtd_placas; i++)
         {
-            corte += vetor_alt[i] - (*metade);
+            corte = vetor_alt[i] - metade;
 
             if(corte < 0)
             {
@@ -24,67 +24,69 @@ void busca_binaria(double vetor_alt[], int qtd_placas, double area, double menor
 
         if(soma == area)
         {
-            return;
+            return metade;
         }
         else
         {
             if(soma > area)
             {
-                menor = (*metade);
+                menor = metade;
             }
             else
             {
-                maior = (*metade);
+                maior = metade;
             }
         }
     }
 
-    return;
+    return metade;
 }
 
 int main()
 {
-    int qtd_placa;
-    double metade, altura, area = 0, soma = 0;
-    double *vetor_alturas;
+    static int loop = 1;
 
-    scanf("%d %lf", &qtd_placa, &area);
-
-    if(qtd_placa == 0 && area == 0)
+    while(loop != 0)
     {
-        return 0;
-    }
+        int qtd_placa;
+        double corte, altura, area = 0, soma = 0;
+        double *vetor_alturas;
 
-    vetor_alturas = (double*)calloc(qtd_placa,sizeof(double));
-    double maior = 0;
+        scanf("%d %lf", &qtd_placa, &area);
 
-    for(int i = 0; i < qtd_placa; i++)
-    {
-        scanf("%lf", &altura);
-        vetor_alturas[i] = altura;
-
-        if(vetor_alturas[i] > maior)
+        if(qtd_placa == 0 && area == 0)
         {
-            maior = vetor_alturas[i];
+            return 0;
         }
 
-        soma += vetor_alturas[i];
-    }
+        vetor_alturas = (double*)calloc(qtd_placa,sizeof(double));
+        double maior = 0;
 
-    printf("%0.4lf\n", maior);
-    printf("%0.4lf\n", soma);
-    if(soma == area)
-    {
-        printf(":D\n");
+        for(int i = 0; i < qtd_placa; i++)
+        {
+            scanf("%lf", &altura);
+            vetor_alturas[i] = altura;
+
+            if(vetor_alturas[i] > maior)
+            {
+                maior = vetor_alturas[i];
+            }
+
+            soma += vetor_alturas[i];
+        }
+
+        if(soma == area)
+        {
+            printf(":D\n");
+        }
+        else if(soma < area)
+        {
+            printf("-.-\n");
+        }
+        else
+        {
+            corte = busca_binaria(vetor_alturas,qtd_placa,area,0,maior,corte);
+            printf("%0.4lf\n",corte);
+        }
     }
-    else if(soma < area)
-    {
-        printf("-.-\n");
-    }
-    else
-    {
-        busca_binaria(vetor_alturas,qtd_placa,area,0,maior, &metade);
-        printf("%0.4lf\n",metade);
-    }
-    return 0;
 }
